@@ -10,7 +10,6 @@ env:
   CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-bigtyno
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
  
- 
 jobs:
   build:
     runs-on: ubuntu-latest
