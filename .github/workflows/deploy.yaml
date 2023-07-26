@@ -2,14 +2,14 @@ name: CI-CD
 
 on:
   push:
-    branches: 
-      -main
-      
+    branches:
+      - main
+
 env:
   S3_BUCKET_NAME: s3-bigtyno
   CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-bigtyno
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
- 
+
 jobs:
   build:
     runs-on: ubuntu-latest
