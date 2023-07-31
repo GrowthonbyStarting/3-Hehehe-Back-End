@@ -174,3 +174,5 @@ gradle-app.setting
 
 *.xml
 
+./src/resources/application.yaml
+
