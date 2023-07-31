@@ -6,6 +6,6 @@ spring:
     show-sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url : test
+    url: test
     username: test
     password: test
