@@ -1,1 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      format_sql : true
+    show-sql: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
