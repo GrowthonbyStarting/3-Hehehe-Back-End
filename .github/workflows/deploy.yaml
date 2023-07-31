@@ -37,7 +37,7 @@ jobs:
         uses: samin/mysql-action@v1
         with:
           character set sever: 'utf8'
-          mysql database: springboot-database
+          mysql database: bigtyno
           mysql user: ${{ secrets.RDS_USERNAME }}
           mysql password: ${{ secrets.RDS_PASSWORD }}
 
