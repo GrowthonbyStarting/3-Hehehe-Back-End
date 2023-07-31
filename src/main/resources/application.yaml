@@ -6,6 +6,6 @@ spring:
     show-sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://springboot-database.cazcki8l5r3x.ap-northeast-2.rds.amazonaws.com:3306/bigtyno
-    username: admin
-    password: adminadmin
+    url: test
+    username: test
+    password: test
