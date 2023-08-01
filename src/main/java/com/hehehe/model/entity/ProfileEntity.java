@@ -25,22 +25,24 @@ public class ProfileEntity extends BaseEntity {
     private Long id;
 
     @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '닉네임'")
-    private String nickNam;
+    private String nickName;
 
     @Column(columnDefinition = "varchar(500) DEFAULT NULL COMMENT '소개'")
     private String introduction;
 
-    @Column(columnDefinition = "varchar(5) DEFAULT NULL COMMENT '공유여부'")
-    private String share;
+    @Column(columnDefinition = "bit default false NOT NULL COMMENT '공유 여부'")
+    private Boolean share;
 
-    @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '공유링크'")
+    @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '공유 링크'")
     private String shareLink;
 
-    @OneToOne(mappedBy = "profile")
-    private ImageEntity image;
-
+    @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '이미지 주소'")
+    private String image;
+    
     @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '카테고리'")
     private String category;
 
+    @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '카테고리'")
+    private String profileStatus;
 
 }
