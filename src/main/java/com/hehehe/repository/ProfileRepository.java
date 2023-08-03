@@ -12,5 +12,6 @@ import java.util.List;
 public interface ProfileRepository extends JpaRepository<ProfileEntity, Long> {
 
     List<ProfileEntity> findAllByShare(Boolean share);
-    Page<ProfileEntity> findAllByShareAndCategory(Boolean share, String category, Pageable pageable);
+    //Page<ProfileEntity> findAllByShare(Boolean share, Pageable pageable);
+    //Page<ProfileEntity> findAllByShareAndCategory(Boolean share, String category, Pageable pageable);
 }

@@ -14,11 +14,8 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "likes")
-@DynamicInsert
-@DynamicUpdate
-@Where(clause = "is_deleted=false")
-public class LikeEntity extends BaseEntity {
+@Table(name = "like_table")
+public class LikeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

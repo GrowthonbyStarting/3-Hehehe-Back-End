@@ -1,4 +1,4 @@
-package com.hehehe.dto;
+package com.hehehe.model.entity.dto;
 
 import com.hehehe.exception.BaseException;
 import com.hehehe.exception.ResultType;
