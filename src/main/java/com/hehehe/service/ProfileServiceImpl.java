@@ -7,7 +7,6 @@ import com.hehehe.model.entity.dto.ProfileDTO;
 import com.hehehe.exception.BaseException;
 import com.hehehe.exception.ResultType;
 import com.hehehe.model.entity.ProfileEntity;
-import com.hehehe.model.entity.dto.UserDTO;
 import com.hehehe.repository.BookmarkRepository;
 import com.hehehe.repository.LikeRepository;
 import com.hehehe.repository.ProfileRepository;
@@ -36,13 +35,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public void create(ProfileDTO.Request request) {
+    public void create(ProfileDTO.Request request, Long userId) {
 
         ProfileEntity profile = modelMapper.map(request, ProfileEntity.class);
         profile.setShareLink("wity.im/");
         profile.setShare(false);
         profile.setProfileStatus(false);
         profile.setCategory("");
+        profile.setUserId(userId);
         profileRepository.save(profile);
     }
 
@@ -56,7 +56,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         Sort sort = Sort.by(direction, sortBy);
-        return PageRequest.of(page, 5, sort);
+        return PageRequest.of(page, 100, sort);
     }
 
     public Page<ProfileDTO.Response> overPages(List<ProfileDTO.Response> profileList, int start, int end, Pageable pageable, int page) {
@@ -77,53 +77,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public Page<ProfileDTO.Response> list(int page, String sortBy, String category) {
-
-        // sortBy ( 좋아요 순 , 최신순 ( 수정 시간 기준)
-        Pageable pageable = getPageable(page, sortBy);
-
-        List<ProfileEntity> profileEntity = profileRepository.findAllByShare(true);
-
-        List<ProfileDTO.Response> responseList = new ArrayList<>();
-
-
-        for (ProfileEntity profile : profileEntity) {
-
-            Long totalCountLike = likeRepository.countByProfile(profile);
-
-            ProfileDTO.Response response = ProfileDTO.Response.builder()
-                    .profileId(profile.getId())
-                    .image(profile.getImage())
-                    .nickName(profile.getNickName())
-                    .introduction(profile.getIntroduction())
-                    .shareLink(profile.getShareLink())
-//                    .bookmark()
-                    .likes(Math.toIntExact(totalCountLike))
-                    .category(profile.getCategory())
-                    .share(profile.getShare())
-                    .updatedAt(profile.getUpdatedAt())
-                    .profileStatus(profile.getProfileStatus())
-                    .build();
-
-            responseList.add(response);
-
-        }
-
-        int start = page * 5;
-        int end = Math.min((start + 5), profileEntity.size());
-
-        System.out.println(end);
-        return overPages(responseList, start, end, pageable, page);
-    }
-
-
-    @Override
-    @Transactional
     public ProfileDTO.Response update(Long profileId, ProfileDTO.Request request) {
         ProfileEntity updateProfile = profileRepository.findById(profileId).orElseThrow(
                 () -> new BaseException(ResultType.NOT_EXIST));
 
-        updateProfile.setId(updateProfile.getId());
         updateProfile.setImage(request.getImage());
         updateProfile.setNickName(request.getNickName());
         updateProfile.setIntroduction(request.getIntroduction());
@@ -133,7 +90,22 @@ public class ProfileServiceImpl implements ProfileService {
         updateProfile.setShare(request.getShare());
 
         ProfileEntity updatedProfile = profileRepository.save(updateProfile);
-        return modelMapper.map(updatedProfile, ProfileDTO.Response.class);
+
+        long time = Timestamp.valueOf(updatedProfile.getUpdatedAt()).getTime();
+
+        ProfileDTO.Response response = ProfileDTO.Response.builder()
+                .profileId(profileId)
+                .image(updateProfile.getImage())
+                .nickName(updateProfile.getNickName())
+                .introduction(updateProfile.getIntroduction())
+                .shareLink(updateProfile.getShareLink())
+                .category(updateProfile.getCategory())
+                .profileStatus(updateProfile.getProfileStatus())
+                .share(updateProfile.getShare())
+                .updatedAt(time)
+                .build();
+
+        return response;
     }
 
     @Override
@@ -156,12 +128,18 @@ public class ProfileServiceImpl implements ProfileService {
                 new IllegalArgumentException("존재 하지 않는 유저 입니다."));
 
         // 두 번 좋아요를 클릭 할 수 없도록 유효성 검사
+        Optional<LikeEntity> like = likeRepository.findByUserAndProfile(user, profile);
 
-        LikeEntity like = new LikeEntity();
-        like.setProfile(profile);
-        like.setUser(user);
+        if (like.isPresent()) {
+            new IllegalArgumentException("좋아요는 한번만 클릭 가능");
+        }
 
-        likeRepository.save(like);
+
+        LikeEntity likes = new LikeEntity();
+        likes.setProfile(profile);
+        likes.setUser(user);
+
+        likeRepository.save(likes);
     }
 
     @Override
@@ -178,10 +156,8 @@ public class ProfileServiceImpl implements ProfileService {
 
         if (like.isPresent()) {
             likeRepository.deleteById(like.get().getId());
+//            likeRepository.deleteAll();
         }
-//        } else {
-//            return new IllegalArgumentException("좋아요를 추가한 프로필이 없습니다.");
-//        }
     }
 
     @Override
@@ -191,7 +167,12 @@ public class ProfileServiceImpl implements ProfileService {
 
         UserEntity user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("존재 하지 않는 유저 입니다."));
+        Optional<BookmarkEntity> bookmarkEntity = bookmarkRepository.findByUserAndProfile(user, profile);
 
+        if (bookmarkEntity.isPresent()) {
+            bookmarkRepository.deleteById(bookmarkEntity.get().getId());
+//            bookmarkRepository.deleteAll();
+        }
         BookmarkEntity bookmark = new BookmarkEntity();
         bookmark.setProfile(profile);
         bookmark.setUser(user);
@@ -209,23 +190,21 @@ public class ProfileServiceImpl implements ProfileService {
         UserEntity user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("존재 하지 않는 유저 입니다."));
 
-        Optional<BookmarkEntity> like = bookmarkRepository.findByUserAndProfile(user, profile);
+        Optional<BookmarkEntity> bookmark = bookmarkRepository.findByUserAndProfile(user, profile);
 
-        if (like.isPresent()) {
-            bookmarkRepository.deleteById(like.get().getId());
+        if (bookmark.isPresent()) {
+            bookmarkRepository.deleteById(bookmark.get().getId());
+//            bookmarkRepository.deleteAll();
         }
-//        } else {
-//            return new IllegalArgumentException("북마크한 프로필이 없습니다.");
-//        }
     }
 
     @Override
-    public Page<ProfileDTO.CommunityResponse> communityList(int page, String sortBy, String category) {
+    public Page<ProfileDTO.CommunityResponse> communityList(int page, String sortBy, String category, Long userId) {
         // sortBy ( 좋아요 순 , 최신순 ( 수정 시간 기준)
         Pageable pageable = getPageable(page, sortBy);
         List<ProfileEntity> profileEntity = profileRepository.findAllByShare(true);
         List<ProfileDTO.CommunityResponse> responseList = new ArrayList<>();
-        Long userId = 1L;
+
 
         for (ProfileEntity profile : profileEntity) {
 
@@ -259,36 +238,111 @@ public class ProfileServiceImpl implements ProfileService {
 
         }
 
-        int start = page * 5;
-        int end = Math.min((start + 5), profileEntity.size());
+        int start = page * 100;
+        int end = Math.min((start + 100), profileEntity.size());
 
         return overPages1(responseList, start, end, pageable, page);
     }
 
     @Override
     public List<ProfileDTO.MultiProfileResponse> profileList(Long userId) {
+
         UserEntity user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("존재 하지 않는 유저 입니다."));
-
-        List<ProfileEntity> profileList = user.getProfileEntityList();
+        List<ProfileEntity> profileList = profileRepository.findAllByUserId(userId);
         List<ProfileDTO.MultiProfileResponse> multiProfileResponses = new ArrayList<>();
 
-        System.out.println(profileList.size());
-
         for (ProfileEntity profile : profileList) {
+
+            Optional<BookmarkEntity> bookmark = bookmarkRepository.findByUserAndProfile(user, profile);
+
+            boolean bookmarkStatus = false;
+
+            if (bookmark.isPresent()) {
+                bookmarkStatus = true;
+            }
 
             ProfileDTO.MultiProfileResponse multiProfileResponse = ProfileDTO.MultiProfileResponse.builder()
                     .profileId(profile.getId())
                     .image(profile.getImage())
                     .nickName(profile.getNickName())
                     .category(profile.getCategory())
-                    .shareLink(profile.getShareLink())
                     .profileStatus(profile.getProfileStatus())
+                    .share(profile.getShare())
                     .build();
 
             multiProfileResponses.add(multiProfileResponse);
         }
         return multiProfileResponses;
+    }
 
+    @Override
+    public List<ProfileDTO.BookmarkProfileResponse> bookmarkProfileList(Long userId) {
+
+        UserEntity user = userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("존재 하지 않는 유저 입니다."));
+        List<ProfileEntity> profileList = profileRepository.findAll();
+        List<ProfileDTO.BookmarkProfileResponse> bookmarkProfileResponseList = new ArrayList<>();
+
+        for (ProfileEntity profile : profileList) {
+            Long totalCountLike = likeRepository.countByProfile(profile);
+            Optional<BookmarkEntity> bookmark = bookmarkRepository.findByUserAndProfile(user, profile);
+
+            if (bookmark.isPresent()) {
+                ProfileDTO.BookmarkProfileResponse bookmarkProfileResponse = ProfileDTO.BookmarkProfileResponse.builder()
+                        .profileId(profile.getId())
+                        .image(profile.getImage())
+                        .nickName(profile.getNickName())
+                        .category(profile.getCategory())
+                        .shareLink(profile.getShareLink())
+                        .bookmark(true)
+                        .likes(Math.toIntExact(totalCountLike))
+                        .build();
+                bookmarkProfileResponseList.add(bookmarkProfileResponse);
+            }
+        }
+        return bookmarkProfileResponseList;
+    }
+
+    @Override
+    @Transactional
+    public ProfileDTO.CategoryResponse category(ProfileDTO.Request request) {
+
+        ProfileEntity updateProfile = profileRepository.findById(request.getProfileId()).orElseThrow(
+                () -> new BaseException(ResultType.NOT_EXIST));
+
+        updateProfile.setId(request.getProfileId());
+        updateProfile.setCategory(request.getCategory());
+
+        profileRepository.save(updateProfile);
+
+        ProfileDTO.CategoryResponse response = ProfileDTO.CategoryResponse.builder()
+                .profileId(request.getProfileId())
+                .category(updateProfile.getCategory())
+                .build();
+
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public ProfileDTO.ShareResponse share(ProfileDTO.Request request) {
+
+        userRepository.findById(request.getProfileId()).orElseThrow(
+                () -> new BaseException(ResultType.NOT_EXIST));
+
+        ProfileEntity updateProfile = profileRepository.findByIdAndUserId(request.getProfileId(), request.getUserId());
+
+        updateProfile.setId(request.getProfileId());
+        updateProfile.setShare(request.getShare());
+
+        ProfileEntity updatedProfile = profileRepository.save(updateProfile);
+
+        ProfileDTO.ShareResponse response = ProfileDTO.ShareResponse.builder()
+                .profileId(request.getProfileId())
+                .share(updateProfile.getShare())
+                .build();
+
+        return response;
     }
 }

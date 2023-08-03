@@ -45,7 +45,5 @@ public class ProfileEntity extends BaseEntity {
     @Column(columnDefinition = "bit default false NOT NULL COMMENT '현재 프로필 상태'")
     private Boolean profileStatus;
 
-
-
-
+    private Long userId;
 }

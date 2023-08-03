@@ -25,33 +25,20 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-
-    private final Long userId = 2L;
-
     @PostMapping
     public void create(@RequestBody Request request) {
-         profileService.create(request);
-    }
-
-    @GetMapping
-    public Page<Response> list(
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "sortBy", defaultValue = "new") String sortBy,
-            @RequestParam(value = "category" , required = false) String category
-             ) {
-        return profileService.list(page -1 , sortBy , category);
-
+         profileService.create(request, request.getUserId());
     }
 
     @GetMapping("/community")
     public Page<CommunityResponse> communityList(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "sortBy", defaultValue = "new") String sortBy,
-            @RequestParam(value = "category" , defaultValue = "default") String category
+            @RequestParam(value = "category" , defaultValue = "default") String category ,
+            @RequestParam(value = "user", required = false) Long user
     ) {
-        return profileService.communityList(page -1 , sortBy , category);
+        return profileService.communityList(page -1 , sortBy , category, user);
     }
-
 
 
     @PutMapping("/{profileId}")
@@ -66,39 +53,42 @@ public class ProfileController {
 
     @PostMapping("/like")
     public void like(@RequestBody Request request) {
-         profileService.like(request, userId);
+         profileService.like(request, request.getUserId());
     }
 
     @DeleteMapping("/like")
     public void likeCancel(@RequestBody Request request) {
-        profileService.likeCancel(request, userId);
+        profileService.likeCancel(request, request.getUserId());
     }
 
     @PostMapping("/bookmark")
     public void bookmark(@RequestBody Request request) {
-        profileService.bookmark(request, userId);
+        profileService.bookmark(request, request.getUserId());
     }
 
     @DeleteMapping("/bookmark")
     public void bookmarkCancel(@RequestBody Request request) {
-        profileService.bookmarkCancel(request, userId);
+        profileService.bookmarkCancel(request, request.getUserId());
     }
 
-    // ToDO: 다중 프로필
     @GetMapping("/multi")
     public List<ProfileDTO.MultiProfileResponse> profileList(
-    ) {
-        return profileService.profileList(userId);
+            @RequestParam(value = "user", required = false) Long user) {
+        return profileService.profileList(user);
+    }
+    @GetMapping("/bookmark")
+    public List<ProfileDTO.BookmarkProfileResponse> bookmarkProfileList(
+            @RequestParam(value = "user", required = false)Long user ){
+        return profileService.bookmarkProfileList(user);
     }
 
-    // ToDO: 북마크 프로필
-//    @GetMapping("/community")
-//    public Page<CommunityResponse> communityList(
-//            @RequestParam(value = "page", defaultValue = "1") int page,
-//            @RequestParam(value = "sortBy", defaultValue = "new") String sortBy,
-//            @RequestParam(value = "category" , defaultValue = "default") String category
-//    ) {
-//        return profileService.communityList(page -1 , sortBy , category);
-//    }
+    @PutMapping("/category")
+    public ProfileDTO.CategoryResponse category(@RequestBody Request request) {
+        return profileService.category(request);
+    }
 
+    @PutMapping("/share")
+    public ProfileDTO.ShareResponse  share(@RequestBody Request request) {
+        return profileService.share(request);
+    }
 }

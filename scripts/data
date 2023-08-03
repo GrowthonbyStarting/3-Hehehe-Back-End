@@ -1,0 +1,74 @@
+{
+    "image" :"https://blog.kakaocdn.net/dn/0mySg/btqCUccOGVk/nQ68nZiNKoIEGNJkooELF1/img.jpg",
+    "nickName": "카카오",
+    "introduction": "카카오 곰돌이 입니다"
+}
+
+{
+    "image" :"https://cdn.pixabay.com/photo/2023/05/05/21/00/cute-7973191_1280.jpg",
+    "nickName": "다람쥐",
+    "introduction": "다람쥐 입니다"
+}
+
+{
+    "image" :"https://blog.kakaocdn.net/dn/0mySg/btqCUccOGVk/nQ68nZiNKoIEGNJkooELF1/img.jpg",
+    "nickName": "카카오",
+    "introduction": "카카오 곰돌이 입니다"
+}
+
+{
+    "image" :"https://image.utoimage.com/preview/cp872722/2022/12/202212008462_206.jpg",
+    "nickName": "강아지",
+    "introduction": "강아지 사진"
+}
+
+
+{
+    "image" : "https://cdn.aitimes.kr/news/photo/202303/27617_41603_044.jpg",
+    "nickName": "고양이",
+    "introduction": "고양이 사진"
+}
+
+
+
+export const option = [
+    {
+        value: 'creator',
+        label: '크리에이터',
+    },
+    {
+        label: '1인 기업',
+        value: 'company',
+    },
+    {
+        label: '온라인 매장',
+        value: 'online',
+    },
+    {
+        label: '공동 구매',
+        value: 'group',
+    },
+    {
+        label: '카페',
+        value: 'cafe',
+    },
+    {
+        label: '자기개발',
+        value: 'self',
+    },
+    {
+        label: '포트폴리오',
+        value: 'portfolio',
+    },
+];
+export const sortOption = [
+    {
+        value: 'new',
+        label: '최신순',
+    },
+    {
+        label: '인기순',
+        value: 'popular',
+    },
+];
+

@@ -18,6 +18,7 @@ public class ProfileDTO {
     @ToString
     public static class Request {
 
+        private Long userId;
         private Long profileId;
         private String image;
         private String nickName;
@@ -46,11 +47,34 @@ public class ProfileDTO {
         private int likes;
         private String category;
         private Boolean share;
-        private LocalDateTime updatedAt;
+        private long updatedAt;
         private Boolean profileStatus;
 
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Setter
+    @ToString
+    public static class ShareResponse {
+
+        private Long profileId;
+        private Boolean share;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Setter
+    @ToString
+    public static class CategoryResponse {
+
+        private Long profileId;
+        private String category;
+    }
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
@@ -76,7 +100,23 @@ public class ProfileDTO {
         private String image;
         private String nickName;
         private String category;
-        private String shareLink;
         private Boolean profileStatus;
+        private Boolean share;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Setter
+    @ToString
+    public static class BookmarkProfileResponse {
+        private Long profileId;
+        private String image;
+        private String nickName;
+        private String category;
+        private String shareLink;
+        private Boolean bookmark;
+        private int likes;
     }
 }

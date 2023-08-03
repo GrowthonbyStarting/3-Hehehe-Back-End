@@ -31,7 +31,4 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
-    private List<ProfileEntity> profileEntityList =new ArrayList<>();
 }
