@@ -1,4 +1,4 @@
-package com.hehehe.dto;
+package com.hehehe.model.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hehehe.exception.BaseException;

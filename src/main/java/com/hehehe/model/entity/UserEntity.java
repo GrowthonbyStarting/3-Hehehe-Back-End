@@ -6,6 +6,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,7 +18,7 @@ import javax.persistence.*;
 @DynamicInsert
 @DynamicUpdate
 @Where(clause = "is_deleted=false")
-@Table(name = "user")
+@Table(name = "user_table")
 public class UserEntity extends BaseEntity {
 
     @Id
@@ -28,4 +30,5 @@ public class UserEntity extends BaseEntity {
     private String userName;
     @Column(nullable = false)
     private String password;
+
 }

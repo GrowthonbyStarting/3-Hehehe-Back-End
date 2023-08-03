@@ -14,10 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bookmark")
-@DynamicInsert
-@DynamicUpdate
-@Where(clause = "is_deleted=false")
+@Table(name = "bookmark_table")
 public class BookmarkEntity {
 
     @Id

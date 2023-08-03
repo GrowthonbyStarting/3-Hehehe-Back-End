@@ -1,8 +1,6 @@
 package com.hehehe.repository;
 
 import com.hehehe.model.entity.ProfileEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +10,10 @@ import java.util.List;
 public interface ProfileRepository extends JpaRepository<ProfileEntity, Long> {
 
     List<ProfileEntity> findAllByShare(Boolean share);
-    Page<ProfileEntity> findAllByShareAndCategory(Boolean share, String category, Pageable pageable);
+    //Page<ProfileEntity> findAllByShare(Boolean share, Pageable pageable);
+    //Page<ProfileEntity> findAllByShareAndCategory(Boolean share, String category, Pageable pageable);
+
+    List<ProfileEntity> findAllByUserId(Long userId);
+
+    ProfileEntity findByIdAndUserId(Long profileId, Long userId);
 }

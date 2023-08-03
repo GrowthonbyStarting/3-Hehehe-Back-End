@@ -16,7 +16,7 @@ import javax.persistence.*;
 @DynamicInsert
 @DynamicUpdate
 @Where(clause = "is_deleted=false")
-@Table(name = "profile")
+@Table(name = "profile_table")
 public class ProfileEntity extends BaseEntity {
 
     @Id
@@ -42,7 +42,8 @@ public class ProfileEntity extends BaseEntity {
     @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '카테고리'")
     private String category;
 
-    @Column(columnDefinition = "varchar(225) DEFAULT NULL COMMENT '카테고리'")
-    private String profileStatus;
+    @Column(columnDefinition = "bit default false NOT NULL COMMENT '현재 프로필 상태'")
+    private Boolean profileStatus;
 
+    private Long userId;
 }
