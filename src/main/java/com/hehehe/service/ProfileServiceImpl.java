@@ -227,6 +227,8 @@ public class ProfileServiceImpl implements ProfileService {
             long time = Timestamp.valueOf(profile.getUpdatedAt()).getTime();
 
             ProfileDTO.CommunityResponse response = ProfileDTO.CommunityResponse.builder()
+                    .nickName(profile.getNickName())
+                    .shareLink(profile.getShareLink())
                     .profileId(profile.getId())
                     .bookmark(bookmarkStatus)
                     .likes(Math.toIntExact(totalCountLike))
