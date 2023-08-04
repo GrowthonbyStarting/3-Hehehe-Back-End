@@ -82,6 +82,8 @@ public class ProfileDTO {
     @Setter
     @ToString
     public static class CommunityResponse {
+        private String nickName;
+        private String shareLink;
         private Long profileId;
         private Boolean bookmark;
         private int likes;
