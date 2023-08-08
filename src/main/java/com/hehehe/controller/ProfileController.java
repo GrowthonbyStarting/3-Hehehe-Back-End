@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/profile")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"https://3-hehehe-front-end.vercel.app","http://localhost:3000"})
+@CrossOrigin(origins = {"https://hehehe-eta.vercel.app/","http://localhost:3000"})
 //@CrossOrigin(origins = "*", allowCredentials = "true")
 public class ProfileController {
 
